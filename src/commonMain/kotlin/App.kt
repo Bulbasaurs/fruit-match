@@ -11,6 +11,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
@@ -29,6 +30,10 @@ expect fun generateSeed(): Long
 expect fun copyToClipboard(text: String)
 expect fun loadScores(): List<HighScore>
 expect fun persistScore(name: String, score: Int)
+
+// Desktop: renders system emoji via Text. Web: loads PNG from Twemoji CDN.
+@Composable
+expect fun PieceCell(piece: String, modifier: Modifier = Modifier)
 
 // ── Pure Kotlin Base64-URL (no padding, no platform deps) ─────────────────────
 private const val B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
@@ -352,22 +357,108 @@ fun StatBox(label: String, value: String, valueColor: Color = DEEP_PINK) {
     }
 }
 
+// ── Animated bubble background (mode select) ─────────────────────────────────
+private data class BubbleSpec(val xFrac: Float, val yFrac: Float, val radiusDp: Float, val isPink: Boolean)
+private data class PopSpark(val xFrac: Float, val yFrac: Float, val progress: Animatable<Float, AnimationVector1D>)
+private val BUBBLES = listOf(
+    BubbleSpec(0.07f, 0.18f, 22f, true),  BubbleSpec(0.23f, 0.73f, 16f, false),
+    BubbleSpec(0.48f, 0.06f, 20f, true),  BubbleSpec(0.72f, 0.32f, 14f, false),
+    BubbleSpec(0.90f, 0.65f, 24f, true),  BubbleSpec(0.15f, 0.50f, 18f, false),
+    BubbleSpec(0.60f, 0.88f, 15f, true),  BubbleSpec(0.38f, 0.40f, 19f, false),
+    BubbleSpec(0.83f, 0.12f, 17f, true),  BubbleSpec(0.05f, 0.80f, 21f, false),
+)
+private val EASE_IN_OUT_SINE = CubicBezierEasing(0.45f, 0f, 0.55f, 1f)
+
+@Composable
+fun AnimatedBubbleBackground(modifier: Modifier = Modifier) {
+    val yOff  = remember { BUBBLES.map { Animatable(0f) } }
+    val alpha = remember { BUBBLES.map { Animatable(1f) } }
+    val scale = remember { BUBBLES.map { Animatable(1f) } }
+    val alive = remember { mutableStateListOf<Boolean>().also { l -> repeat(BUBBLES.size) { l.add(true) } } }
+    val sparks = remember { mutableStateListOf<PopSpark>() }
+    val scope  = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        // Float each bubble at its own pace
+        BUBBLES.indices.forEach { i ->
+            launch {
+                delay(i * 150L)
+                val period = 2200 + i * 280   // 2.2 – 4.7 s per half-cycle → gentle drift
+                val amp    = 8f + (i % 4) * 6f
+                while (true) {
+                    yOff[i].animateTo( amp, tween(period, easing = EASE_IN_OUT_SINE))
+                    yOff[i].animateTo(-amp, tween(period, easing = EASE_IN_OUT_SINE))
+                }
+            }
+        }
+        // Pop scheduler: randomly pop a bubble every 1-3 seconds
+        delay(2000)
+        while (true) {
+            delay(kotlin.random.Random.nextLong(2000, 4500))
+            val candidates = BUBBLES.indices.filter { alive[it] }
+            if (candidates.isEmpty()) continue
+            val i = candidates.random()
+            alive[i] = false
+            launch {
+                scale[i].animateTo(1.45f, tween(200))          // scale-up
+                alpha[i].animateTo(0f, tween(280))              // fade out
+
+                val b = BUBBLES[i]                              // spawn sparkle burst
+                val sp = PopSpark(b.xFrac, b.yFrac, Animatable(0f))
+                sparks.add(sp)
+                launch { sp.progress.animateTo(1f, tween(1100, easing = FastOutSlowInEasing)); sparks.remove(sp) }
+
+                delay(1300)                                    // respawn
+                scale[i].snapTo(0.05f); alpha[i].snapTo(0f); yOff[i].snapTo(0f)
+                launch { scale[i].animateTo(1f, spring(dampingRatio = 0.5f, stiffness = 140f)) }
+                alpha[i].animateTo(1f, tween(450))
+                alive[i] = true
+            }
+        }
+    }
+
+    Canvas(modifier.fillMaxSize()) {
+        BUBBLES.forEachIndexed { i, b ->
+            val cx  = size.width  * b.xFrac
+            val cy  = size.height * b.yFrac + yOff[i].value.dp.toPx()
+            val r   = b.radiusDp.dp.toPx() * scale[i].value
+            val a   = alpha[i].value
+            val col = if (b.isPink) HOT_PINK else BABY_BLUE
+            drawCircle(col.copy(alpha = 0.14f * a), r, Offset(cx, cy))                        // fill
+            drawCircle(col.copy(alpha = 0.22f * a), r, Offset(cx, cy), style = Stroke(1.5f.dp.toPx())) // ring
+            drawCircle(Color.White.copy(alpha = 0.48f * a), r * 0.22f, Offset(cx - r * 0.28f, cy - r * 0.30f)) // shine
+        }
+        sparks.toList().forEach { sp ->
+            val p   = sp.progress.value
+            val cx  = size.width  * sp.xFrac
+            val cy  = size.height * sp.yFrac
+            val a   = (1f - p * 1.5f).coerceIn(0f, 1f)
+            val d   = p * 30f.dp.toPx()
+            BURST_DIRS.forEach { (dx, dy) ->
+                drawCircle(Color.White.copy(alpha = a), (2.5f + p * 2f).dp.toPx(), Offset(cx + dx * d, cy + dy * d))
+            }
+        }
+    }
+}
+
 // ── Mode select ───────────────────────────────────────────────────────────────
 @Composable
 fun ModeSelectScreen(onSelect: (GameMode) -> Unit) {
-    Box(Modifier.fillMaxSize().background(BG).y2kDots()) {
+    Box(Modifier.fillMaxSize().background(BG)) {
+        Box(Modifier.fillMaxSize().y2kDots())
+        AnimatedBubbleBackground()
         Column(Modifier.fillMaxSize().padding(28.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             Text("★ FRUIT MATCH ★", color = HOT_PINK, fontSize = 24.sp, fontWeight = FontWeight.Black, fontFamily = PIXEL_FONT, letterSpacing = 2.sp)
             Spacer(Modifier.height(4.dp))
             Text("choose ur mode  ♡", color = DEEP_PINK.copy(alpha = 0.65f), fontSize = 12.sp, fontFamily = PIXEL_FONT)
             Spacer(Modifier.height(32.dp))
-            ModeCard("🎮", "ENDLESS",   "match til no moves remain\nno pressure — just vibes",                                   Color(0xFFFFE4F3), HOT_PINK,  GameMode.ENDLESS,   onSelect)
+            ModeCard("🎮", "ENDLESS",   "match n match til no moves remain\nvery zen, very chill, very demure",                                   Color(0xFFFFE4F3), HOT_PINK,  GameMode.ENDLESS,   onSelect)
             Spacer(Modifier.height(12.dp))
-            ModeCard("🏆", "CHALLENGE", "$CHALLENGE_MOVES moves • share ur code to challenge friends!\nsame seed = same board", Color(0xFFDFF3FF), BABY_BLUE, GameMode.CHALLENGE, onSelect)
+            ModeCard("🏆", "CHALLENGE", "$CHALLENGE_MOVES moves • challenge urself, ur friends, ur cat, the president, etc", Color(0xFFDFF3FF), BABY_BLUE, GameMode.CHALLENGE, onSelect)
             Spacer(Modifier.height(12.dp))
-            ModeCard("📖", "STORY",     "${STORY_LEVELS.size} levels — collect target fruits\ngoals get tougher each level",    Color(0xFFF0E4FF), LAVENDER,  GameMode.STORY,     onSelect)
+            ModeCard("📖", "STORY",     "${STORY_LEVELS.size} levels • achieve ur fruit dreams\ngoals get tougher each lvl tho",    Color(0xFFF0E4FF), LAVENDER,  GameMode.STORY,     onSelect)
             Spacer(Modifier.height(16.dp))
-            Text("💣 match 4 = bomb  •  🌈 match 5 = rainbow", color = DEEP_PINK.copy(alpha = 0.45f), fontSize = 9.sp, fontFamily = PIXEL_FONT)
+            Text("💣 match 4 to make the bomb  •  🌈 match 5 to taste the rainbow", color = DEEP_PINK.copy(alpha = 0.45f), fontSize = 9.sp, fontFamily = PIXEL_FONT)
             Spacer(Modifier.height(20.dp))
             Text("♡ ★ ♡ ★ ♡ ★ ♡ ★ ♡", color = HOT_PINK.copy(alpha = 0.3f), fontSize = 12.sp, fontFamily = PIXEL_FONT, letterSpacing = 3.sp)
         }
@@ -672,7 +763,7 @@ fun Match3App(mode: GameMode, seed: Long, opponentScore: Int? = null, onMenu: ()
                                                 onDragCancel = { dragSrc = null; dragOffset = Offset.Zero }
                                             )
                                         }, contentAlignment = Alignment.Center
-                                    ) { Text(grid[i], fontSize = if (isSpecial(grid[i])) 22.sp else 26.sp, textAlign = TextAlign.Center) }
+                                    ) { PieceCell(grid[i], Modifier.fillMaxSize()) }
                                 }
                             }
                         }
