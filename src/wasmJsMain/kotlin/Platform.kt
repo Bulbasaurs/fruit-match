@@ -1,4 +1,5 @@
 @file:Suppress("OPT_IN_USAGE", "UNCHECKED_CAST")
+@file:OptIn(org.jetbrains.compose.resources.InternalResourceApi::class)
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontFamily
+import com.hackathon.*
 import kotlin.js.Promise
 import kotlinx.coroutines.await
 import org.jetbrains.skia.Image as SkiaImage
@@ -77,6 +80,12 @@ private suspend fun loadEmojiBitmap(emoji: String): ImageBitmap? {
     }.getOrNull()
     emojiCache[emoji] = bitmap
     return bitmap
+}
+
+@Composable
+actual fun platformPixelFont(): FontFamily {
+    val font = org.jetbrains.compose.resources.Font(com.hackathon.Res.font.NotoSansMono_Regular)
+    return remember(font) { FontFamily(font) }
 }
 
 @Composable

@@ -275,7 +275,11 @@ val DEEP_PINK    = Color(0xFF8B0045)
 val BABY_BLUE    = Color(0xFF60CDFF)
 val LAVENDER     = Color(0xFFCC99FF)
 val STAR_YELLOW  = Color(0xFFFFE84D)
-val PIXEL_FONT   = FontFamily.Monospace
+// Provided in FruitMatchApp — desktop uses system monospace, WASM uses bundled NotoSansMono
+val LocalPixelFont = staticCompositionLocalOf<FontFamily> { FontFamily.Monospace }
+
+@Composable
+expect fun platformPixelFont(): FontFamily
 
 val BG_DOTS = listOf(0.06f to 0.08f, 0.88f to 0.12f, 0.18f to 0.92f, 0.82f to 0.88f, 0.5f to 0.04f, 0.04f to 0.5f, 0.96f to 0.5f, 0.5f to 0.96f, 0.3f to 0.3f, 0.7f to 0.3f, 0.3f to 0.7f, 0.7f to 0.7f, 0.15f to 0.18f, 0.85f to 0.75f, 0.42f to 0.55f)
 
@@ -315,7 +319,7 @@ fun FloatingPop(pop: PopEntry, onDone: () -> Unit) {
     LaunchedEffect(pop.id) { launch { alpha.animateTo(1f, tween(100)); delay(500); alpha.animateTo(0f, tween(400)) }; yShift.animateTo(-60f, tween(1000, easing = FastOutSlowInEasing)); onDone() }
     val gridDp = GRID * CELL_DP
     Box(Modifier.fillMaxSize()) {
-        Text("★ ${pop.label} ★", color = HOT_PINK, fontSize = 24.sp, fontWeight = FontWeight.Black, fontFamily = PIXEL_FONT,
+        Text("★ ${pop.label} ★", color = HOT_PINK, fontSize = 24.sp, fontWeight = FontWeight.Black, fontFamily = LocalPixelFont.current,
             modifier = Modifier.align(Alignment.Center)
                 .offset(x = (-gridDp / 2f + (pop.centerCol + 0.5f) * CELL_DP).dp, y = (-gridDp / 2f + (pop.centerRow + 0.5f) * CELL_DP + yShift.value).dp)
                 .graphicsLayer(alpha = alpha.value))
@@ -334,12 +338,12 @@ fun PixelDialog(
     Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.38f)), contentAlignment = Alignment.Center) {
         Surface(shape = RoundedCornerShape(14.dp), color = containerColor, border = BorderStroke(2.dp, HOT_PINK.copy(alpha = 0.4f)), modifier = Modifier.widthIn(min = 260.dp, max = 380.dp)) {
             Column(Modifier.padding(20.dp)) {
-                Text(title, fontFamily = PIXEL_FONT, color = titleColor, fontSize = 13.sp, fontWeight = FontWeight.Black)
+                Text(title, fontFamily = LocalPixelFont.current, color = titleColor, fontSize = 13.sp, fontWeight = FontWeight.Black)
                 Spacer(Modifier.height(10.dp)); content(); Spacer(Modifier.height(14.dp))
                 extraButton?.invoke(); if (extraButton != null) Spacer(Modifier.height(8.dp))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    if (dismissText != null && onDismiss != null) { TextButton(onClick = onDismiss) { Text(dismissText, fontFamily = PIXEL_FONT, color = DEEP_PINK) }; Spacer(Modifier.width(6.dp)) }
-                    Button(onClick = onConfirm, colors = ButtonDefaults.buttonColors(containerColor = HOT_PINK), shape = RoundedCornerShape(8.dp)) { Text(confirmText, fontFamily = PIXEL_FONT, fontWeight = FontWeight.Black, color = Color.White) }
+                    if (dismissText != null && onDismiss != null) { TextButton(onClick = onDismiss) { Text(dismissText, fontFamily = LocalPixelFont.current, color = DEEP_PINK) }; Spacer(Modifier.width(6.dp)) }
+                    Button(onClick = onConfirm, colors = ButtonDefaults.buttonColors(containerColor = HOT_PINK), shape = RoundedCornerShape(8.dp)) { Text(confirmText, fontFamily = LocalPixelFont.current, fontWeight = FontWeight.Black, color = Color.White) }
                 }
             }
         }
@@ -352,8 +356,8 @@ fun PixelDialog(
 @Composable
 fun StatBox(label: String, value: String, valueColor: Color = DEEP_PINK) {
     Column(Modifier.padding(horizontal = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(label, color = HOT_PINK, fontSize = 8.sp, fontWeight = FontWeight.Bold, fontFamily = PIXEL_FONT, letterSpacing = 1.sp)
-        Text(value, color = valueColor, fontSize = 17.sp, fontWeight = FontWeight.Black, fontFamily = PIXEL_FONT)
+        Text(label, color = HOT_PINK, fontSize = 8.sp, fontWeight = FontWeight.Bold, fontFamily = LocalPixelFont.current, letterSpacing = 1.sp)
+        Text(value, color = valueColor, fontSize = 17.sp, fontWeight = FontWeight.Black, fontFamily = LocalPixelFont.current)
     }
 }
 
@@ -448,9 +452,9 @@ fun ModeSelectScreen(onSelect: (GameMode) -> Unit) {
         Box(Modifier.fillMaxSize().y2kDots())
         AnimatedBubbleBackground()
         Column(Modifier.fillMaxSize().padding(28.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            Text("★ FRUIT MATCH ★", color = HOT_PINK, fontSize = 24.sp, fontWeight = FontWeight.Black, fontFamily = PIXEL_FONT, letterSpacing = 2.sp)
+            Text("★ FRUIT MATCH ★", color = HOT_PINK, fontSize = 24.sp, fontWeight = FontWeight.Black, fontFamily = LocalPixelFont.current, letterSpacing = 2.sp)
             Spacer(Modifier.height(4.dp))
-            Text("choose ur mode  ♡", color = DEEP_PINK.copy(alpha = 0.65f), fontSize = 12.sp, fontFamily = PIXEL_FONT)
+            Text("choose ur mode  ♡", color = DEEP_PINK.copy(alpha = 0.65f), fontSize = 12.sp, fontFamily = LocalPixelFont.current)
             Spacer(Modifier.height(32.dp))
             ModeCard("🎮", "ENDLESS",   "match n match til no moves remain\nvery zen, very chill, very demure",                                   Color(0xFFFFE4F3), HOT_PINK,  GameMode.ENDLESS,   onSelect)
             Spacer(Modifier.height(12.dp))
@@ -458,9 +462,9 @@ fun ModeSelectScreen(onSelect: (GameMode) -> Unit) {
             Spacer(Modifier.height(12.dp))
             ModeCard("📖", "STORY",     "${STORY_LEVELS.size} levels • achieve ur fruit dreams\ngoals get tougher each lvl tho",    Color(0xFFF0E4FF), LAVENDER,  GameMode.STORY,     onSelect)
             Spacer(Modifier.height(16.dp))
-            Text("💣 match 4 to make the bomb  •  🌈 match 5 to taste the rainbow", color = DEEP_PINK.copy(alpha = 0.45f), fontSize = 9.sp, fontFamily = PIXEL_FONT)
+            Text("match 4 in a line = bomb  •  match 5 in a line = rainbow", color = DEEP_PINK.copy(alpha = 0.45f), fontSize = 9.sp, fontFamily = LocalPixelFont.current)
             Spacer(Modifier.height(20.dp))
-            Text("♡ ★ ♡ ★ ♡ ★ ♡ ★ ♡", color = HOT_PINK.copy(alpha = 0.3f), fontSize = 12.sp, fontFamily = PIXEL_FONT, letterSpacing = 3.sp)
+            Text("♡ ★ ♡ ★ ♡ ★ ♡ ★ ♡", color = HOT_PINK.copy(alpha = 0.3f), fontSize = 12.sp, fontFamily = LocalPixelFont.current, letterSpacing = 3.sp)
         }
     }
 }
@@ -469,11 +473,11 @@ fun ModeSelectScreen(onSelect: (GameMode) -> Unit) {
 fun ModeCard(icon: String, title: String, description: String, cardBg: Color, borderColor: Color, mode: GameMode, onSelect: (GameMode) -> Unit) {
     Surface(onClick = { onSelect(mode) }, shape = RoundedCornerShape(10.dp), color = cardBg, border = BorderStroke(2.dp, borderColor.copy(alpha = 0.6f)), modifier = Modifier.width(310.dp)) {
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(icon, fontSize = 28.sp); Spacer(Modifier.width(12.dp))
+            PieceCell(icon, Modifier.size(36.dp)); Spacer(Modifier.width(12.dp))
             Column {
-                Text(title, color = DEEP_PINK, fontSize = 14.sp, fontWeight = FontWeight.Black, fontFamily = PIXEL_FONT, letterSpacing = 1.sp)
+                Text(title, color = DEEP_PINK, fontSize = 14.sp, fontWeight = FontWeight.Black, fontFamily = LocalPixelFont.current, letterSpacing = 1.sp)
                 Spacer(Modifier.height(2.dp))
-                Text(description, color = DEEP_PINK.copy(alpha = 0.55f), fontSize = 10.sp, fontFamily = PIXEL_FONT)
+                Text(description, color = DEEP_PINK.copy(alpha = 0.55f), fontSize = 10.sp, fontFamily = LocalPixelFont.current)
             }
         }
     }
@@ -487,46 +491,46 @@ fun ChallengeMenuScreen(onNewChallenge: (Long) -> Unit, onAcceptChallenge: (Long
     var errorMsg   by remember { mutableStateOf("") }
     Box(Modifier.fillMaxSize().background(BG).y2kDots()) {
         Column(Modifier.fillMaxSize().padding(28.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            Text("🏆 CHALLENGE MODE", color = BABY_BLUE, fontSize = 20.sp, fontWeight = FontWeight.Black, fontFamily = PIXEL_FONT, letterSpacing = 1.sp)
+            Text("🏆 CHALLENGE MODE", color = BABY_BLUE, fontSize = 20.sp, fontWeight = FontWeight.Black, fontFamily = LocalPixelFont.current, letterSpacing = 1.sp)
             Spacer(Modifier.height(4.dp))
-            Text("same seed = same board = fair fight ♡", color = DEEP_PINK.copy(alpha = 0.6f), fontSize = 11.sp, fontFamily = PIXEL_FONT)
+            Text("same seed = same board = fair fight ♡", color = DEEP_PINK.copy(alpha = 0.6f), fontSize = 11.sp, fontFamily = LocalPixelFont.current)
             Spacer(Modifier.height(28.dp))
             if (!acceptMode) {
                 Surface(onClick = { onNewChallenge(generateSeed()) }, shape = RoundedCornerShape(10.dp), color = Color(0xFFDFF3FF), border = BorderStroke(2.dp, BABY_BLUE.copy(alpha = 0.6f)), modifier = Modifier.width(310.dp)) {
                     Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Text("🆕", fontSize = 28.sp); Spacer(Modifier.width(12.dp))
-                        Column { Text("NEW CHALLENGE", color = DEEP_PINK, fontSize = 14.sp, fontWeight = FontWeight.Black, fontFamily = PIXEL_FONT); Spacer(Modifier.height(2.dp)); Text("play a fresh board\nget a code to challenge friends!", color = DEEP_PINK.copy(alpha = 0.55f), fontSize = 10.sp, fontFamily = PIXEL_FONT) }
+                        PieceCell("🆕", Modifier.size(36.dp)); Spacer(Modifier.width(12.dp))
+                        Column { Text("NEW CHALLENGE", color = DEEP_PINK, fontSize = 14.sp, fontWeight = FontWeight.Black, fontFamily = LocalPixelFont.current); Spacer(Modifier.height(2.dp)); Text("play a fresh board\nget a code to challenge friends!", color = DEEP_PINK.copy(alpha = 0.55f), fontSize = 10.sp, fontFamily = LocalPixelFont.current) }
                     }
                 }
                 Spacer(Modifier.height(12.dp))
                 Surface(onClick = { acceptMode = true }, shape = RoundedCornerShape(10.dp), color = Color(0xFFFFE4F3), border = BorderStroke(2.dp, HOT_PINK.copy(alpha = 0.6f)), modifier = Modifier.width(310.dp)) {
                     Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Text("📋", fontSize = 28.sp); Spacer(Modifier.width(12.dp))
-                        Column { Text("ACCEPT CHALLENGE", color = DEEP_PINK, fontSize = 14.sp, fontWeight = FontWeight.Black, fontFamily = PIXEL_FONT); Spacer(Modifier.height(2.dp)); Text("paste a friend's code\nplay their exact board!", color = DEEP_PINK.copy(alpha = 0.55f), fontSize = 10.sp, fontFamily = PIXEL_FONT) }
+                        PieceCell("📋", Modifier.size(36.dp)); Spacer(Modifier.width(12.dp))
+                        Column { Text("ACCEPT CHALLENGE", color = DEEP_PINK, fontSize = 14.sp, fontWeight = FontWeight.Black, fontFamily = LocalPixelFont.current); Spacer(Modifier.height(2.dp)); Text("paste a friend's code\nplay their exact board!", color = DEEP_PINK.copy(alpha = 0.55f), fontSize = 10.sp, fontFamily = LocalPixelFont.current) }
                     }
                 }
             } else {
                 Surface(shape = RoundedCornerShape(10.dp), color = Color(0xFFFFE4F3), border = BorderStroke(2.dp, HOT_PINK.copy(alpha = 0.4f)), modifier = Modifier.width(310.dp)) {
                     Column(Modifier.padding(16.dp)) {
-                        Text("PASTE UR FRIEND'S CODE:", color = HOT_PINK, fontSize = 10.sp, fontWeight = FontWeight.Bold, fontFamily = PIXEL_FONT, letterSpacing = 1.sp)
+                        Text("PASTE UR FRIEND'S CODE:", color = HOT_PINK, fontSize = 10.sp, fontWeight = FontWeight.Bold, fontFamily = LocalPixelFont.current, letterSpacing = 1.sp)
                         Spacer(Modifier.height(8.dp))
-                        OutlinedTextField(value = codeInput, onValueChange = { codeInput = it; errorMsg = "" }, singleLine = true, textStyle = LocalTextStyle.current.copy(fontFamily = PIXEL_FONT, fontSize = 13.sp), placeholder = { Text("e.g. 0X3F9KL:SGVsbG8...", fontFamily = PIXEL_FONT, fontSize = 11.sp) }, modifier = Modifier.fillMaxWidth())
-                        if (errorMsg.isNotEmpty()) { Spacer(Modifier.height(4.dp)); Text(errorMsg, color = HOT_PINK, fontSize = 10.sp, fontFamily = PIXEL_FONT) }
+                        OutlinedTextField(value = codeInput, onValueChange = { codeInput = it; errorMsg = "" }, singleLine = true, textStyle = LocalTextStyle.current.copy(fontFamily = LocalPixelFont.current, fontSize = 13.sp), placeholder = { Text("e.g. 0X3F9KL:SGVsbG8...", fontFamily = LocalPixelFont.current, fontSize = 11.sp) }, modifier = Modifier.fillMaxWidth())
+                        if (errorMsg.isNotEmpty()) { Spacer(Modifier.height(4.dp)); Text(errorMsg, color = HOT_PINK, fontSize = 10.sp, fontFamily = LocalPixelFont.current) }
                         Spacer(Modifier.height(10.dp))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                            TextButton(onClick = { acceptMode = false; codeInput = ""; errorMsg = "" }) { Text("cancel", fontFamily = PIXEL_FONT, color = DEEP_PINK) }
+                            TextButton(onClick = { acceptMode = false; codeInput = ""; errorMsg = "" }) { Text("cancel", fontFamily = LocalPixelFont.current, color = DEEP_PINK) }
                             Spacer(Modifier.width(6.dp))
                             Button(onClick = {
                                 val parsed = decodeChallenge(codeInput)
                                 if (parsed == null) { errorMsg = "invalid code! check ur input ♡" }
                                 else { val (seed, moves) = parsed; onAcceptChallenge(seed, replayChallenge(seed, moves)) }
-                            }, colors = ButtonDefaults.buttonColors(containerColor = HOT_PINK), shape = RoundedCornerShape(8.dp)) { Text("start! →", fontFamily = PIXEL_FONT, fontWeight = FontWeight.Black, color = Color.White) }
+                            }, colors = ButtonDefaults.buttonColors(containerColor = HOT_PINK), shape = RoundedCornerShape(8.dp)) { Text("start! →", fontFamily = LocalPixelFont.current, fontWeight = FontWeight.Black, color = Color.White) }
                         }
                     }
                 }
             }
             Spacer(Modifier.height(24.dp))
-            TextButton(onClick = onBack) { Text("← back", fontFamily = PIXEL_FONT, color = DEEP_PINK.copy(alpha = 0.7f)) }
+            TextButton(onClick = onBack) { Text("← back", fontFamily = LocalPixelFont.current, color = DEEP_PINK.copy(alpha = 0.7f)) }
         }
     }
 }
@@ -544,6 +548,8 @@ sealed class AppScreen {
 // ── Root composable (entry point for all platforms) ───────────────────────────
 @Composable
 fun FruitMatchApp() {
+    val pixelFont = platformPixelFont()
+    CompositionLocalProvider(LocalPixelFont provides pixelFont) {
     MaterialTheme {
         var screen by remember { mutableStateOf<AppScreen>(AppScreen.ModeSelect) }
         when (val s = screen) {
@@ -558,6 +564,7 @@ fun FruitMatchApp() {
             is AppScreen.Game -> Match3App(mode = s.mode, seed = s.seed, opponentScore = s.opponentScore, onMenu = { screen = AppScreen.ModeSelect })
         }
     }
+    } // CompositionLocalProvider
 }
 
 // ── Game screen ───────────────────────────────────────────────────────────────
@@ -696,9 +703,9 @@ fun Match3App(mode: GameMode, seed: Long, opponentScore: Int? = null, onMenu: ()
                     GameMode.STORY -> {
                         ToolDivider(); val level = STORY_LEVELS[storyLevelIdx]
                         Column(Modifier.weight(1f).padding(horizontal = 4.dp)) {
-                            Text("LV ${level.number}: ${level.title.uppercase()}", color = HOT_PINK, fontSize = 8.sp, fontWeight = FontWeight.Bold, fontFamily = PIXEL_FONT, letterSpacing = 0.5.sp)
+                            Text("LV ${level.number}: ${level.title.uppercase()}", color = HOT_PINK, fontSize = 8.sp, fontWeight = FontWeight.Bold, fontFamily = LocalPixelFont.current, letterSpacing = 0.5.sp)
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                level.goals.forEach { g -> val got = (storyProgress[g.fruit] ?: 0).coerceAtMost(g.required); val done = got >= g.required; Text("${g.fruit} $got/${g.required}", color = if (done) Color(0xFF007B00) else DEEP_PINK, fontSize = 11.sp, fontFamily = PIXEL_FONT, fontWeight = if (done) FontWeight.Black else FontWeight.Normal) }
+                                level.goals.forEach { g -> val got = (storyProgress[g.fruit] ?: 0).coerceAtMost(g.required); val done = got >= g.required; Text("${g.fruit} $got/${g.required}", color = if (done) Color(0xFF007B00) else DEEP_PINK, fontSize = 11.sp, fontFamily = LocalPixelFont.current, fontWeight = if (done) FontWeight.Black else FontWeight.Normal) }
                             }
                         }
                         ToolDivider(); val ml = movesLeft ?: 0; StatBox("MOVES", "$ml", if (ml <= 5) HOT_PINK else DEEP_PINK)
@@ -708,26 +715,26 @@ fun Match3App(mode: GameMode, seed: Long, opponentScore: Int? = null, onMenu: ()
                         if (opponentScore != null) {
                             ToolDivider(); val ahead = score - opponentScore; val ac = when { ahead > 0 -> Color(0xFF007B00); ahead < 0 -> HOT_PINK; else -> DEEP_PINK }
                             Column(Modifier.padding(horizontal = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("FRIEND", color = HOT_PINK, fontSize = 8.sp, fontWeight = FontWeight.Bold, fontFamily = PIXEL_FONT, letterSpacing = 1.sp)
-                                Text("$opponentScore", color = DEEP_PINK, fontSize = 17.sp, fontWeight = FontWeight.Black, fontFamily = PIXEL_FONT)
-                                val sign = if (ahead >= 0) "+" else ""; Text("${sign}${ahead}", color = ac, fontSize = 8.sp, fontFamily = PIXEL_FONT, fontWeight = FontWeight.Bold)
+                                Text("FRIEND", color = HOT_PINK, fontSize = 8.sp, fontWeight = FontWeight.Bold, fontFamily = LocalPixelFont.current, letterSpacing = 1.sp)
+                                Text("$opponentScore", color = DEEP_PINK, fontSize = 17.sp, fontWeight = FontWeight.Black, fontFamily = LocalPixelFont.current)
+                                val sign = if (ahead >= 0) "+" else ""; Text("${sign}${ahead}", color = ac, fontSize = 8.sp, fontFamily = LocalPixelFont.current, fontWeight = FontWeight.Bold)
                             }
                         }
                         ToolDivider(); StatBox("BEST", "${maxCombo}x", if (maxCombo >= 3) Color(0xFFB8007A) else DEEP_PINK)
                         if (opponentScore == null) {
                             ToolDivider()
                             Column(Modifier.weight(1f).padding(horizontal = 4.dp)) {
-                                Text("★ TOP SCORES", color = HOT_PINK, fontSize = 8.sp, fontWeight = FontWeight.Bold, fontFamily = PIXEL_FONT, letterSpacing = 0.5.sp)
-                                if (highScores.isEmpty()) Text("no scores yet ♡", color = DEEP_PINK.copy(alpha = 0.4f), fontSize = 9.sp, fontFamily = PIXEL_FONT)
-                                else highScores.forEachIndexed { i, hs -> Text("${i+1}. ${hs.name}  ${hs.score}", color = DEEP_PINK, fontSize = 9.sp, fontFamily = PIXEL_FONT, maxLines = 1, overflow = TextOverflow.Ellipsis) }
+                                Text("★ TOP SCORES", color = HOT_PINK, fontSize = 8.sp, fontWeight = FontWeight.Bold, fontFamily = LocalPixelFont.current, letterSpacing = 0.5.sp)
+                                if (highScores.isEmpty()) Text("no scores yet ♡", color = DEEP_PINK.copy(alpha = 0.4f), fontSize = 9.sp, fontFamily = LocalPixelFont.current)
+                                else highScores.forEachIndexed { i, hs -> Text("${i+1}. ${hs.name}  ${hs.score}", color = DEEP_PINK, fontSize = 9.sp, fontFamily = LocalPixelFont.current, maxLines = 1, overflow = TextOverflow.Ellipsis) }
                             }
                         } else { Spacer(Modifier.weight(1f)) }
                     }
                 }
                 Spacer(Modifier.width(6.dp))
-                Button(onClick = ::newGame, colors = ButtonDefaults.buttonColors(containerColor = HOT_PINK), contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp), shape = RoundedCornerShape(6.dp)) { Text("NEW", fontSize = 10.sp, fontFamily = PIXEL_FONT, fontWeight = FontWeight.Black, color = Color.White) }
+                Button(onClick = ::newGame, colors = ButtonDefaults.buttonColors(containerColor = HOT_PINK), contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp), shape = RoundedCornerShape(6.dp)) { Text("NEW", fontSize = 10.sp, fontFamily = LocalPixelFont.current, fontWeight = FontWeight.Black, color = Color.White) }
                 Spacer(Modifier.width(3.dp))
-                TextButton(onClick = onMenu, contentPadding = PaddingValues(horizontal = 6.dp, vertical = 4.dp)) { Text("MENU", fontSize = 10.sp, fontFamily = PIXEL_FONT, fontWeight = FontWeight.Bold, color = DEEP_PINK.copy(alpha = 0.7f)) }
+                TextButton(onClick = onMenu, contentPadding = PaddingValues(horizontal = 6.dp, vertical = 4.dp)) { Text("MENU", fontSize = 10.sp, fontFamily = LocalPixelFont.current, fontWeight = FontWeight.Bold, color = DEEP_PINK.copy(alpha = 0.7f)) }
             }
 
             // Grid
@@ -781,16 +788,16 @@ fun Match3App(mode: GameMode, seed: Long, opponentScore: Int? = null, onMenu: ()
                     val nextLevel = STORY_LEVELS[storyLevelIdx + 1]
                     PixelDialog(title = "★ LEVEL ${storyLevelIdx + 1} CLEAR! ★",
                         content = {
-                            if (lastLevelBonus > 0) { Text("speed bonus: +$lastLevelBonus pts ★", fontFamily = PIXEL_FONT, color = HOT_PINK, fontSize = 12.sp, fontWeight = FontWeight.Bold); Text("(${lastLevelBonus / 50} moves remaining)", fontFamily = PIXEL_FONT, color = DEEP_PINK.copy(alpha = 0.6f), fontSize = 10.sp); Spacer(Modifier.height(6.dp)) }
-                            Text("score: $score\nnext: lv ${nextLevel.number} — ${nextLevel.title}", fontFamily = PIXEL_FONT, color = DEEP_PINK, fontSize = 12.sp)
+                            if (lastLevelBonus > 0) { Text("speed bonus: +$lastLevelBonus pts ★", fontFamily = LocalPixelFont.current, color = HOT_PINK, fontSize = 12.sp, fontWeight = FontWeight.Bold); Text("(${lastLevelBonus / 50} moves remaining)", fontFamily = LocalPixelFont.current, color = DEEP_PINK.copy(alpha = 0.6f), fontSize = 10.sp); Spacer(Modifier.height(6.dp)) }
+                            Text("score: $score\nnext: lv ${nextLevel.number} — ${nextLevel.title}", fontFamily = LocalPixelFont.current, color = DEEP_PINK, fontSize = 12.sp)
                         },
                         confirmText = "next level →", onConfirm = { startLevel(storyLevelIdx + 1) }, dismissText = "menu", onDismiss = onMenu)
                 }
                 Phase.STORY_COMPLETE -> {
                     PixelDialog(title = "★ STORY COMPLETE ★",
                         content = {
-                            if (lastLevelBonus > 0) { Text("final speed bonus: +$lastLevelBonus pts ★", fontFamily = PIXEL_FONT, color = HOT_PINK, fontSize = 12.sp, fontWeight = FontWeight.Bold); Spacer(Modifier.height(6.dp)) }
-                            Text("u cleared all ${STORY_LEVELS.size} levels!! ♡\nfinal score: $score", fontFamily = PIXEL_FONT, color = DEEP_PINK, fontSize = 12.sp)
+                            if (lastLevelBonus > 0) { Text("final speed bonus: +$lastLevelBonus pts ★", fontFamily = LocalPixelFont.current, color = HOT_PINK, fontSize = 12.sp, fontWeight = FontWeight.Bold); Spacer(Modifier.height(6.dp)) }
+                            Text("u cleared all ${STORY_LEVELS.size} levels!! ♡\nfinal score: $score", fontFamily = LocalPixelFont.current, color = DEEP_PINK, fontSize = 12.sp)
                         },
                         confirmText = "back to menu ♡", onConfirm = onMenu)
                 }
@@ -800,29 +807,29 @@ fun Match3App(mode: GameMode, seed: Long, opponentScore: Int? = null, onMenu: ()
                     if (mode == GameMode.STORY) {
                         val level = STORY_LEVELS[storyLevelIdx]
                         PixelDialog(title = "★ $titleText", containerColor = Color(0xFFDFF3FF), titleColor = BABY_BLUE,
-                            content = { Text("lv ${level.number}: ${level.title}", fontFamily = PIXEL_FONT, color = DEEP_PINK, fontWeight = FontWeight.Bold, fontSize = 12.sp); Spacer(Modifier.height(6.dp)); level.goals.forEach { g -> Text("${g.fruit}  ${(storyProgress[g.fruit] ?: 0).coerceAtMost(g.required)} / ${g.required}", fontFamily = PIXEL_FONT, color = DEEP_PINK, fontSize = 12.sp) } },
+                            content = { Text("lv ${level.number}: ${level.title}", fontFamily = LocalPixelFont.current, color = DEEP_PINK, fontWeight = FontWeight.Bold, fontSize = 12.sp); Spacer(Modifier.height(6.dp)); level.goals.forEach { g -> Text("${g.fruit}  ${(storyProgress[g.fruit] ?: 0).coerceAtMost(g.required)} / ${g.required}", fontFamily = LocalPixelFont.current, color = DEEP_PINK, fontSize = 12.sp) } },
                             confirmText = "retry ↩", onConfirm = { startLevel(storyLevelIdx) }, dismissText = "menu", onDismiss = onMenu)
                     } else if (mode == GameMode.CHALLENGE && opponentScore != null) {
                         val youWin = score > opponentScore; val tied = score == opponentScore
                         PixelDialog(title = "★ $titleText",
                             content = {
-                                Text(when { youWin -> "u win!! 🎉"; tied -> "it's a tie!! 🤝"; else -> "so close!! ♡" }, fontFamily = PIXEL_FONT, color = if (youWin) Color(0xFF007B00) else HOT_PINK, fontSize = 13.sp, fontWeight = FontWeight.Black)
+                                Text(when { youWin -> "u win!! 🎉"; tied -> "it's a tie!! 🤝"; else -> "so close!! ♡" }, fontFamily = LocalPixelFont.current, color = if (youWin) Color(0xFF007B00) else HOT_PINK, fontSize = 13.sp, fontWeight = FontWeight.Black)
                                 Spacer(Modifier.height(8.dp))
-                                Text("you:    $score", fontFamily = PIXEL_FONT, color = DEEP_PINK, fontSize = 13.sp, fontWeight = FontWeight.Bold)
-                                Text("friend: $opponentScore", fontFamily = PIXEL_FONT, color = DEEP_PINK.copy(alpha = 0.7f), fontSize = 13.sp)
+                                Text("you:    $score", fontFamily = LocalPixelFont.current, color = DEEP_PINK, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                                Text("friend: $opponentScore", fontFamily = LocalPixelFont.current, color = DEEP_PINK.copy(alpha = 0.7f), fontSize = 13.sp)
                             },
                             confirmText = "play again ♡", onConfirm = { newGame() }, dismissText = "menu", onDismiss = onMenu)
                     } else {
                         val challengeCode = if (mode == GameMode.CHALLENGE) remember(rng.seed, recordedMoves.size) { encodeChallenge(rng.seed, recordedMoves.toList()) } else ""
                         PixelDialog(title = "★ $titleText",
                             content = {
-                                Text("score: $score  •  best combo: ${maxCombo}x", fontFamily = PIXEL_FONT, color = DEEP_PINK, fontWeight = FontWeight.Bold, fontSize = 11.sp)
+                                Text("score: $score  •  best combo: ${maxCombo}x", fontFamily = LocalPixelFont.current, color = DEEP_PINK, fontWeight = FontWeight.Bold, fontSize = 11.sp)
                                 if (challengeCode.isNotEmpty()) {
-                                    Spacer(Modifier.height(10.dp)); Text("ur challenge code:", fontFamily = PIXEL_FONT, color = HOT_PINK, fontSize = 9.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp); Spacer(Modifier.height(4.dp))
-                                    Surface(shape = RoundedCornerShape(6.dp), color = Color(0xFFDFF3FF), border = BorderStroke(1.dp, BABY_BLUE.copy(alpha = 0.5f))) { Text(challengeCode, fontFamily = PIXEL_FONT, color = DEEP_PINK, fontSize = 10.sp, modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp), maxLines = 2) }
+                                    Spacer(Modifier.height(10.dp)); Text("ur challenge code:", fontFamily = LocalPixelFont.current, color = HOT_PINK, fontSize = 9.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp); Spacer(Modifier.height(4.dp))
+                                    Surface(shape = RoundedCornerShape(6.dp), color = Color(0xFFDFF3FF), border = BorderStroke(1.dp, BABY_BLUE.copy(alpha = 0.5f))) { Text(challengeCode, fontFamily = LocalPixelFont.current, color = DEEP_PINK, fontSize = 10.sp, modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp), maxLines = 2) }
                                 }
-                                Spacer(Modifier.height(10.dp)); Text("ur name:", fontFamily = PIXEL_FONT, color = DEEP_PINK, fontSize = 11.sp); Spacer(Modifier.height(4.dp))
-                                OutlinedTextField(value = nameInput, onValueChange = { nameInput = it.take(12) }, singleLine = true, textStyle = LocalTextStyle.current.copy(fontFamily = PIXEL_FONT, fontSize = 13.sp), placeholder = { Text("player", fontFamily = PIXEL_FONT) })
+                                Spacer(Modifier.height(10.dp)); Text("ur name:", fontFamily = LocalPixelFont.current, color = DEEP_PINK, fontSize = 11.sp); Spacer(Modifier.height(4.dp))
+                                OutlinedTextField(value = nameInput, onValueChange = { nameInput = it.take(12) }, singleLine = true, textStyle = LocalTextStyle.current.copy(fontFamily = LocalPixelFont.current, fontSize = 13.sp), placeholder = { Text("player", fontFamily = LocalPixelFont.current) })
                             },
                             confirmText = "save + play again ♡",
                             onConfirm = { persistScore(nameInput.trim().ifEmpty { "player" }, score); highScores = loadScores(); newGame() },
@@ -831,7 +838,7 @@ fun Match3App(mode: GameMode, seed: Long, opponentScore: Int? = null, onMenu: ()
                                 Button(onClick = { copyToClipboard(challengeCode); codeCopied = true; scope.launch { delay(2000); codeCopied = false } },
                                     colors = ButtonDefaults.buttonColors(containerColor = if (codeCopied) Color(0xFF007B00) else BABY_BLUE),
                                     shape = RoundedCornerShape(8.dp), modifier = Modifier.fillMaxWidth()
-                                ) { Text(if (codeCopied) "copied! ♡" else "copy challenge code ★", fontFamily = PIXEL_FONT, fontWeight = FontWeight.Black, color = Color.White) }
+                                ) { Text(if (codeCopied) "copied! ♡" else "copy challenge code ★", fontFamily = LocalPixelFont.current, fontWeight = FontWeight.Black, color = Color.White) }
                             }) else null
                         )
                     }

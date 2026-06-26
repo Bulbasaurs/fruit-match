@@ -1,10 +1,10 @@
 abi_version=1.8.0
 builtins_platform=WASM
 compiler_version=1.9.24
-depends=org.jetbrains.compose.material3\:material3 org.jetbrains.compose.material\:material-ripple org.jetbrains.compose.foundation\:foundation org.jetbrains.compose.animation\:animation org.jetbrains.compose.animation\:animation-core org.jetbrains.kotlinx\:kotlinx-coroutines-core org.jetbrains.kotlinx\:atomicfu org.jetbrains.compose.foundation\:foundation-layout org.jetbrains.compose.material\:material-icons-core org.jetbrains.compose.ui\:ui org.jetbrains.compose.runtime\:runtime-saveable kotlin org.jetbrains.compose.runtime\:runtime org.jetbrains.compose.ui\:ui-text org.jetbrains.compose.ui\:ui-graphics org.jetbrains.compose.ui\:ui-unit org.jetbrains.compose.ui\:ui-geometry org.jetbrains.compose.ui\:ui-util org.jetbrains.skiko\:skiko
+depends=components.resources\:library org.jetbrains.compose.material3\:material3 org.jetbrains.compose.material\:material-ripple org.jetbrains.compose.foundation\:foundation org.jetbrains.compose.animation\:animation org.jetbrains.compose.animation\:animation-core org.jetbrains.kotlinx\:kotlinx-coroutines-core org.jetbrains.kotlinx\:atomicfu org.jetbrains.compose.foundation\:foundation-layout org.jetbrains.compose.material\:material-icons-core org.jetbrains.compose.ui\:ui org.jetbrains.compose.runtime\:runtime-saveable kotlin org.jetbrains.compose.runtime\:runtime org.jetbrains.compose.ui\:ui-text org.jetbrains.compose.ui\:ui-graphics org.jetbrains.compose.ui\:ui-unit org.jetbrains.compose.ui\:ui-geometry org.jetbrains.compose.ui\:ui-util org.jetbrains.skiko\:skiko
 ir_signature_versions=1,2
 jsOutputName=fruitMatch
 metadata_version=1.4.1
-serializedIrFileFingerprints=t0gpp5y3qv6y.234pspfb9pa96 19ta432n95jwp.3s1rpmmrkmfsi 6t92q1wbg1xm.2bydvp4494t3y
-serializedKlibFingerprint=1hp75zbbup3vd.3gxx5k6jmjeo8
+serializedIrFileFingerprints=2lgb50jn3ovwi.23gveeinsads6 32n3evid75sa7.354x1gbaeo6iq 2lclwskza8k7y.1eef32umc3wtm 19ta432n95jwp.3s1rpmmrkmfsi 23zhbk2eelp0g.fiyf6d14lsid
+serializedKlibFingerprint=3gos9bzku4z9e.3i9eap6ncbrgk
 unique_name=com.hackathon\:Match3

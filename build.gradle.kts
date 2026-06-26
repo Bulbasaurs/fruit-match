@@ -39,6 +39,7 @@ kotlin {
                 implementation(compose.foundation)
                 implementation(compose.animation)
                 implementation(compose.material3)
+                implementation(compose.components.resources)
             }
         }
         val desktopMain by getting {
@@ -48,6 +49,10 @@ kotlin {
         }
         // wasmJsMain has no extra deps — JS interop is stdlib
     }
+}
+
+compose.resources {
+    packageOfResClass = "com.hackathon"
 }
 
 compose.desktop {

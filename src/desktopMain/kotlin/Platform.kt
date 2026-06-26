@@ -3,10 +3,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import java.io.File
+
+@Composable
+actual fun platformPixelFont(): FontFamily = FontFamily.Monospace
 
 @Composable
 actual fun PieceCell(piece: String, modifier: Modifier) {
