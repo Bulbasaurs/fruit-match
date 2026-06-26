@@ -1,0 +1,10 @@
+abi_version=1.8.0
+builtins_platform=WASM
+compiler_version=1.9.24
+depends=org.jetbrains.compose.material3\:material3 org.jetbrains.compose.material\:material-ripple org.jetbrains.compose.foundation\:foundation org.jetbrains.compose.animation\:animation org.jetbrains.compose.animation\:animation-core org.jetbrains.kotlinx\:kotlinx-coroutines-core org.jetbrains.kotlinx\:atomicfu org.jetbrains.compose.foundation\:foundation-layout org.jetbrains.compose.material\:material-icons-core org.jetbrains.compose.ui\:ui org.jetbrains.compose.runtime\:runtime-saveable kotlin org.jetbrains.compose.runtime\:runtime org.jetbrains.compose.ui\:ui-text org.jetbrains.compose.ui\:ui-graphics org.jetbrains.compose.ui\:ui-unit org.jetbrains.compose.ui\:ui-geometry org.jetbrains.compose.ui\:ui-util org.jetbrains.skiko\:skiko
+ir_signature_versions=1,2
+jsOutputName=fruitMatch
+metadata_version=1.4.1
+serializedIrFileFingerprints=1cbjxpriy79ni.3qehy67su19zo 19ta432n95jwp.3s1rpmmrkmfsi 31iyq6jfjpqzx.33y61desk8vhe
+serializedKlibFingerprint=3dqwbkl7y4aq9.34lv3rw1it2bs
+unique_name=com.hackathon\:Match3

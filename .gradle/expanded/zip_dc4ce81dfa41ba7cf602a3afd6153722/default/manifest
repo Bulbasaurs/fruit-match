@@ -1,0 +1,10 @@
+abi_version=1.8.0
+builtins_platform=WASM
+compiler_version=1.9.23
+depends=kotlin
+ir_signature_versions=1,2
+jsOutputName=compose-multiplatform-core-annotation-annotation-wasm-js
+metadata_version=1.4.1
+serializedIrFileFingerprints=163iqn0awimju.1jas5ur0tq77b 1olo9rjvfups0.3gpnukpxiojt3 3tgdfvj6j1ehx.30aksi2egfktk 1zl63mbt38wb8.2vsuuczk592e9 2hexj4xa5gn4w.1t9p3qq3yewoq 38eaqpedgxhz1.1bt49s10enfw9 1uu9q7fvmxeru.2cko31jjub56d 1zl8hcedla3gv.3aosks2kwvo65 11y77n2r87j0k.eu9btn0zovrw 1f2fwafb1wucf.2taii7m4861u 3vbfhao0qhsju.49dhltydnv7j 32nldo3586ddu.1iqcurgha8ewo 3edglwgqnkksd.3puoyz0b5a8vr 16xq1laoyqm4z.23vf1pkm8l5f7 3cu1bg5zwspqc.6vtt2dyer6ya 2fofpq98lpfqs.1fwj4dp5512ca 1jm503vb57yp3.2l9wsv6dmwt6t 2pp1v04pqtlib.2z7jv4f5asv4j 218oxprmw66q0.1qpkfiff2eval 1vzcd45xtfcqw.x42dmn2ux8n8 3mw2k3gipdtaq.1le1c0dbsf92e t0ayhc1r1a79.2m0jpn456n1xp 25jkgmblhq0zt.17mtf3o4z7uzk pqodpwh27mqv.1g6l5vcgcvc9h
+serializedKlibFingerprint=a2r3dita8r21.xaj55j5c9ie0
+unique_name=org.jetbrains.compose.annotation-internal\:annotation

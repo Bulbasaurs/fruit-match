@@ -1,0 +1,9 @@
+abi_version=1.8.0
+builtins_platform=WASM
+compiler_version=1.9.23
+depends=org.jetbrains.androidx.lifecycle\:lifecycle-common org.jetbrains.compose.annotation-internal\:annotation org.jetbrains.kotlinx\:kotlinx-coroutines-core org.jetbrains.kotlinx\:atomicfu kotlin
+ir_signature_versions=1,2
+metadata_version=1.4.1
+serializedIrFileFingerprints=snz3kq7edc5j.eykyldriunus 1xft8ke1kdu2w.3zvyio3g0bqv 29oy134m2spta.s8y07g4x42k8 2lktx64o5aq70.2b1in7n74s8q9 1s26yic0fp0l8.gaal0uifpjq7 1j548j12ayxau.18ardf2e09xsd 3a91sht1cllii.2s3p2lydtzgtu 14fyfnd2h6lgw.2lfub8zzw4qf2
+serializedKlibFingerprint=3g2ngkkqpi6zb.v6ofht3h1443
+unique_name=org.jetbrains.androidx.lifecycle\:lifecycle-runtime

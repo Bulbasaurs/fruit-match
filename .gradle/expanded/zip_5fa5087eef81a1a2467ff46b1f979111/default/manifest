@@ -1,0 +1,10 @@
+abi_version=1.8.0
+builtins_platform=WASM
+compiler_version=1.9.23
+depends=kotlin
+ir_signature_versions=1,2
+jsOutputName=compose-multiplatform-core-compose-ui-ui-util-wasm-js
+metadata_version=1.4.1
+serializedIrFileFingerprints=2vczleh4l1v50.23d307w6xzmzi kphf3hvvnknk.29apa5rfig5a9 65p9taj48ny9.2cekvvinqs7ur 3j86w4yo0zrwc.3d0uw2fws6wx3 100mz6865v05r.9otvjfq2gr56 2uqgjpb12iedj.a4v3fvix9na8 3ae7cem74dat.33t8o5u0zy34y
+serializedKlibFingerprint=30elv800bmx6w.2dfk40x0cko1x
+unique_name=org.jetbrains.compose.ui\:ui-util

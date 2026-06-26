@@ -1,0 +1,10 @@
+abi_version=1.8.0
+builtins_platform=WASM
+compiler_version=1.9.23
+depends=org.jetbrains.androidx.lifecycle\:lifecycle-runtime org.jetbrains.androidx.lifecycle\:lifecycle-common org.jetbrains.compose.annotation-internal\:annotation org.jetbrains.compose.runtime\:runtime org.jetbrains.kotlinx\:kotlinx-coroutines-core org.jetbrains.kotlinx\:atomicfu kotlin
+ir_signature_versions=1,2
+jsOutputName=compose-multiplatform-core-lifecycle-lifecycle-runtime-compose-wasm-js
+metadata_version=1.4.1
+serializedIrFileFingerprints=3ag2d4n93q6kf.9ijnmu43s4tz 2o31wfpso3n5l.11gpemy7xiyfk 3ddzjmqqzzrk9.1ixp6xzc2u92a m47be9cflb9q.lpm1wm8g4sy7 3uwf4ad303uii.m99xaa8dcbxd
+serializedKlibFingerprint=3jrbp4xz7kziu.zbnzhuqvq3tz
+unique_name=org.jetbrains.androidx.lifecycle\:lifecycle-runtime-compose

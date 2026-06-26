@@ -1,0 +1,19 @@
+{
+  "name": "Match3",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/fruitMatch",
+    "packages/fruitMatch-test",
+    "packages_imported/skiko-wasm-js/0.8.4",
+    "packages_imported/skiko-js-wasm-runtime/0.8.4",
+    "packages_imported/Kotlin-DateTime-library-kotlinx-datetime-wasm-js/0.6.0",
+    "packages_imported/kotlin-test-js-runner/0.0.1"
+  ],
+  "devDependencies": {},
+  "dependencies": {},
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": [],
+  "resolutions": {}
+}
